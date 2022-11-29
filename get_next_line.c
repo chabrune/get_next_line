@@ -6,7 +6,7 @@
 /*   By: chabrune <charlesbrunet51220@gmail.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 06:54:16 by chabrune          #+#    #+#             */
-/*   Updated: 2022/11/29 06:57:59 by chabrune         ###   ########.fr       */
+/*   Updated: 2022/11/29 19:51:25 by chabrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,41 +36,47 @@ char	*ft_read(int fd, char *stash)
 	buff = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buff)
 		return (NULL);
-	while (readed != 0 && (!ft_strchr(stash, '\n')))
-	//strchr if !s null -- stash sera null 1er appel
+	while (readed > 0 && (!ft_strchr(stash, '\n')))
 	{
 		readed = read(fd, buff, BUFFER_SIZE);
-		if (readed == -1)
+		if (readed < 0)
 		{
+			free(stash);
 			free(buff);
 			return (NULL);
 		}
 		buff[readed] = '\0';
 		stash = ft_strjoin(stash, buff);
+		if (!stash)
+		{
+			free(buff);
+			free(stash);
+			return (NULL);
+		}
 	}
 	free(buff);
 	return (stash);
-} // je suis ton pere et je laime bien
+}
 
-char	*ft_line(char *stash) // je suis ton pere et je laime bi\nen
+char	*ft_line(char *stash)
 {
-	int i;
-	char *buff;
-	
+	int		i;
+	char	*buff;
+
 	i = 0;
-	if (!stash[i]) // IMPORTANT SINON NE LIT PAS TOUTES LES LINE
+	if (!stash[i] || !stash)
 		return (NULL);
 	while (stash[i] && stash[i] != '\n')
 		i++;
-	buff = (char *)malloc((i + 2) * sizeof(char));
+	if (ft_strchr(stash, '\n'))
+		buff = (char *)malloc((i + 2) * sizeof(char));
+	else
+		buff = (char *)malloc((i + 1) * sizeof(char));
 	if (!buff)
 		return (NULL);
-	i = 0;
-	while (stash[i] && stash[i] != '\n')
-	{
+	i = -1;
+	while (stash[++i] && stash[i] != '\n')
 		buff[i] = stash[i];
-		i++;
-	}
 	if (stash[i] == '\n')
 	{
 		buff[i] = stash[i];
@@ -80,28 +86,28 @@ char	*ft_line(char *stash) // je suis ton pere et je laime bi\nen
 	return (buff);
 }
 
-char	*ft_save(char *save)
+char	*ft_save(char *stash)
 {
-	int i;
-	int c;
-	char *s;
+	int		i;
+	int		j;
+	char	*s;
 
 	i = 0;
-	while (save[i] && save[i] != '\n')
+	while (stash[i] && stash[i] != '\n')
 		i++;
-	if (!save[i])
+	if (!stash[i] || !stash)
 	{
-		free(save);
+		free(stash);
 		return (NULL);
 	}
-	s = (char *)malloc(sizeof(char) * (ft_strlen(save) - i + 1));
+	s = (char *)malloc(sizeof(char) * (ft_strlen(stash) - i));
 	if (!s)
 		return (NULL);
 	i++;
-	c = 0;
-	while (save[i])
-		s[c++] = save[i++];
-	s[c] = '\0';
-	free(save);
+	j = 0;
+	while (stash[i])
+		s[j++] = stash[i++];
+	s[j] = '\0';
+	free(stash);
 	return (s);
 }

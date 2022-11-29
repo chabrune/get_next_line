@@ -6,7 +6,7 @@
 /*   By: chabrune <charlesbrunet51220@gmail.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 06:54:41 by chabrune          #+#    #+#             */
-/*   Updated: 2022/11/29 06:54:43 by chabrune         ###   ########.fr       */
+/*   Updated: 2022/11/29 18:56:21 by chabrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,26 +25,35 @@ size_t	ft_strlen(const char *str)
 char	*ft_strjoin(char *s1, char *s2)
 {
 	size_t	i;
-	size_t	c;
+	size_t	j;
 	char	*str;
 
-	if (!s1) // stash sera vide au premier appel
+	i = 0;
+	j = 0;
+	if (!s1)
 	{
-		s1 = (char *)malloc(1 * sizeof(char));
+		s1 = malloc(sizeof(char) * 1);
+		if (!s1)
+			return (NULL);
 		s1[0] = '\0';
 	}
-	if (!s1 || !s2)
+	if ((!s1 || !s2))
+	{
+		free(s1);
 		return (NULL);
+	}
 	str = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
-	if (str == NULL)
+	if (!str)
+	{
+		free(s1);
 		return (NULL);
-	i = -1;
-	c = 0;
-	while (s1[++i] != '\0')
-		str[i] = s1[i];
-	while (s2[c] != '\0')
-		str[i++] = s2[c++];
-	str[ft_strlen(s1) + ft_strlen(s2)] = '\0';
+	}
+	while (s1[i] != '\0')
+		str[i++] = s1[j++];
+	j = 0;
+	while (s2[j] != '\0')
+		str[i++] = s2[j++];
+	str[i] = '\0';
 	free(s1);
 	return (str);
 }
