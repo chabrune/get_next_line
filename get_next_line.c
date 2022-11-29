@@ -5,55 +5,103 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chabrune <charlesbrunet51220@gmail.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/25 14:18:43 by chabrune          #+#    #+#             */
-/*   Updated: 2022/11/25 17:43:02 by chabrune         ###   ########.fr       */
+/*   Created: 2022/11/29 06:54:16 by chabrune          #+#    #+#             */
+/*   Updated: 2022/11/29 06:57:59 by chabrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
 char	*get_next_line(int fd)
-{   
-    char        *line;
-    static char *stash;
-
-    
-    // 1. read from fd and add to linked list
-    read_and_stash(fd, &stash);
-    // 2. extract from stash to line
-    // 3. clean up stash   
-
-}
-
-/* Uses read() to add characters to the stash */
-
-void	read_and_stash(int fd, char *stash)
 {
-    int readed;
-    char *buf;
+	static char	*stash;
+	char		*line;
 
-    readed = 1;
-    while(!found_newline(stash) && readed != 0)
-    {
-        buf = (char*)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-        if(!buf)
-            return;
-        readed = (int)read(fd, buf, BUFFER_SIZE);
-    }
-
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (0);
+	stash = ft_read(fd, stash);
+	if (!stash)
+		return (NULL);
+	line = ft_line(stash);
+	stash = ft_save(stash);
+	return (line);
 }
-/* Adds the content of our buffer to the end of our stash */
 
-void	add_to_stash()
-
-/* Extracts all characters from our stash and stores them in out line.
- * stopping after the first \n it encounters */
-
-void	extract_line()
+char	*ft_read(int fd, char *stash)
 {
-    
+	char	*buff;
+	int		readed;
+
+	readed = 1;
+	buff = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buff)
+		return (NULL);
+	while (readed != 0 && (!ft_strchr(stash, '\n')))
+	//strchr if !s null -- stash sera null 1er appel
+	{
+		readed = read(fd, buff, BUFFER_SIZE);
+		if (readed == -1)
+		{
+			free(buff);
+			return (NULL);
+		}
+		buff[readed] = '\0';
+		stash = ft_strjoin(stash, buff);
+	}
+	free(buff);
+	return (stash);
+} // je suis ton pere et je laime bien
+
+char	*ft_line(char *stash) // je suis ton pere et je laime bi\nen
+{
+	int i;
+	char *buff;
+	
+	i = 0;
+	if (!stash[i]) // IMPORTANT SINON NE LIT PAS TOUTES LES LINE
+		return (NULL);
+	while (stash[i] && stash[i] != '\n')
+		i++;
+	buff = (char *)malloc((i + 2) * sizeof(char));
+	if (!buff)
+		return (NULL);
+	i = 0;
+	while (stash[i] && stash[i] != '\n')
+	{
+		buff[i] = stash[i];
+		i++;
+	}
+	if (stash[i] == '\n')
+	{
+		buff[i] = stash[i];
+		i++;
+	}
+	buff[i] = '\0';
+	return (buff);
 }
 
-/* After extracting the line that was read, we don't need those characters
- * anymore. This function clears the stash so only the characters that have
- * not been returned at the end of get_next_line remain in our static stash. */
+char	*ft_save(char *save)
+{
+	int i;
+	int c;
+	char *s;
+
+	i = 0;
+	while (save[i] && save[i] != '\n')
+		i++;
+	if (!save[i])
+	{
+		free(save);
+		return (NULL);
+	}
+	s = (char *)malloc(sizeof(char) * (ft_strlen(save) - i + 1));
+	if (!s)
+		return (NULL);
+	i++;
+	c = 0;
+	while (save[i])
+		s[c++] = save[i++];
+	s[c] = '\0';
+	free(save);
+	return (s);
+}

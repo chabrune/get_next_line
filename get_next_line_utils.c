@@ -5,56 +5,62 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chabrune <charlesbrunet51220@gmail.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/25 14:21:50 by chabrune          #+#    #+#             */
-/*   Updated: 2022/11/25 17:43:07 by chabrune         ###   ########.fr       */
+/*   Created: 2022/11/29 06:54:41 by chabrune          #+#    #+#             */
+/*   Updated: 2022/11/29 06:54:43 by chabrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-char *strchr(char *s, int c)
-    int i
-    i = 0
-    
-    if c = /0
-        return &s ft_strlen de s
-     while s de i diff de /0
-         if s de i == c
-            return s de i 
-         i++
-     return 0
+#include "get_next_line.h"
 
-int	ft_strlen(const char *str)
+size_t	ft_strlen(const char *str)
 {
-    int i;
+	size_t	i;
 
-    i = 0;
-    while(str[i])
-        i++;
-    return(i);
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
 }
 
-char *strjoin (char s1 char s2)
-    int i
-    int j
-    char *str
-    
-    j = 0
-    i = 0
-    
-    if !s1
-        malloc sizeof char * 1
-        s1 de 0 = /0
-    if !s1 et !s2
-        return NULL
-    str = malloc ft strlen de s1 et s2 + 1
-    if (!str)
-        return NULL
-     while s1 de i
-        str de i = s1 de i
-        i++
-     while s2 de i
-     str de i = s2 de c
-     i++
-     c++
-     str de ft strlen de s1 + s2 = /0
-     return str
-     
+char	*ft_strjoin(char *s1, char *s2)
+{
+	size_t	i;
+	size_t	c;
+	char	*str;
+
+	if (!s1) // stash sera vide au premier appel
+	{
+		s1 = (char *)malloc(1 * sizeof(char));
+		s1[0] = '\0';
+	}
+	if (!s1 || !s2)
+		return (NULL);
+	str = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+	if (str == NULL)
+		return (NULL);
+	i = -1;
+	c = 0;
+	while (s1[++i] != '\0')
+		str[i] = s1[i];
+	while (s2[c] != '\0')
+		str[i++] = s2[c++];
+	str[ft_strlen(s1) + ft_strlen(s2)] = '\0';
+	free(s1);
+	return (str);
+}
+
+int	ft_strchr(char *s, int c)
+{
+	int	i;
+
+	i = 0;
+	if (!s)
+		return (0);
+	while (s[i] != '\0')
+	{
+		if (s[i] == (char)c)
+			return (1);
+		i++;
+	}
+	return (0);
+}
