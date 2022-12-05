@@ -6,7 +6,7 @@
 /*   By: chabrune <charlesbrunet51220@gmail.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 06:54:41 by chabrune          #+#    #+#             */
-/*   Updated: 2022/11/29 18:56:21 by chabrune         ###   ########.fr       */
+/*   Updated: 2022/12/05 20:26:44 by chabrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,29 +31,17 @@ char	*ft_strjoin(char *s1, char *s2)
 	i = 0;
 	j = 0;
 	if (!s1)
-	{
-		s1 = malloc(sizeof(char) * 1);
-		if (!s1)
-			return (NULL);
-		s1[0] = '\0';
-	}
-	if ((!s1 || !s2))
-	{
-		free(s1);
-		return (NULL);
-	}
-	str = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+		s1 = ft_calloc(1, sizeof(char));
+	if ((!s1 || !s2) && !s1)
+		return (ft_free(s1));
+	str = ft_calloc((ft_strlen(s1) + ft_strlen(s2) + 1), sizeof(char));
 	if (!str)
-	{
-		free(s1);
-		return (NULL);
-	}
+		return (ft_free(s1));
 	while (s1[i] != '\0')
 		str[i++] = s1[j++];
 	j = 0;
 	while (s2[j] != '\0')
 		str[i++] = s2[j++];
-	str[i] = '\0';
 	free(s1);
 	return (str);
 }
@@ -72,4 +60,29 @@ int	ft_strchr(char *s, int c)
 		i++;
 	}
 	return (0);
+}
+
+void	*ft_calloc(size_t num, size_t size)
+{
+	char	*p;
+
+	p = malloc(num * size);
+	if (!p)
+		return (0);
+	ft_bzero(p, size * num);
+	return (p);
+}
+
+void	ft_bzero(void *s, size_t n)
+{
+	size_t	i;
+	char	*str;
+
+	i = 0;
+	str = (char *)s;
+	while (i < n)
+	{
+		str[i] = 0;
+		i++;
+	}
 }

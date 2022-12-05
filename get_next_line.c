@@ -6,7 +6,7 @@
 /*   By: chabrune <charlesbrunet51220@gmail.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 06:54:16 by chabrune          #+#    #+#             */
-/*   Updated: 2022/11/29 19:51:25 by chabrune         ###   ########.fr       */
+/*   Updated: 2022/12/05 21:38:23 by chabrune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,18 @@ char	*get_next_line(int fd)
 		return (0);
 	stash = ft_read(fd, stash);
 	if (!stash)
-		return (NULL);
+	{
+		free(stash);
+		stash = NULL;
+		return (0);
+	}
 	line = ft_line(stash);
+	if (!line)
+	{
+		free(stash);
+		stash = NULL;
+		return (0);
+	}
 	stash = ft_save(stash);
 	return (line);
 }
@@ -35,26 +45,21 @@ char	*ft_read(int fd, char *stash)
 	readed = 1;
 	buff = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buff)
-		return (NULL);
+		return (ft_free(stash));
 	while (readed > 0 && (!ft_strchr(stash, '\n')))
 	{
 		readed = read(fd, buff, BUFFER_SIZE);
 		if (readed < 0)
 		{
-			free(stash);
-			free(buff);
-			return (NULL);
+			ft_free(stash);
+			return (ft_free(buff));
 		}
 		buff[readed] = '\0';
 		stash = ft_strjoin(stash, buff);
 		if (!stash)
-		{
-			free(buff);
-			free(stash);
-			return (NULL);
-		}
+			return (ft_free(buff));
 	}
-	free(buff);
+	ft_free(buff);
 	return (stash);
 }
 
@@ -95,19 +100,27 @@ char	*ft_save(char *stash)
 	i = 0;
 	while (stash[i] && stash[i] != '\n')
 		i++;
-	if (!stash[i] || !stash)
-	{
-		free(stash);
-		return (NULL);
-	}
-	s = (char *)malloc(sizeof(char) * (ft_strlen(stash) - i));
+	if (!stash || !stash[i])
+		return (ft_free(stash));
+	if (stash[i] == '\n')
+		i++;
+	s = (char *)malloc(sizeof(char) * (ft_strlen(stash) - i + 1));
 	if (!s)
-		return (NULL);
-	i++;
+		return (ft_free(stash));
 	j = 0;
 	while (stash[i])
 		s[j++] = stash[i++];
 	s[j] = '\0';
-	free(stash);
+	ft_free(stash);
 	return (s);
+}
+
+void	*ft_free(char *s1)
+{
+	if (s1)
+	{
+		free(s1);
+		s1 = NULL;
+	}
+	return (NULL);
 }
