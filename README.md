@@ -19,16 +19,6 @@ char *get_next_line(int fd);
 - Retourne NULL en fin de fichier ou en cas d'erreur
 - Conserve le \n final sauf pour la dernière ligne si elle n'en a pas
 
-## ⚙️ Compilation
-
-```bash
-# Compilation basique
-cc -Wall -Wextra -Werror get_next_line.c get_next_line_utils.c
-
-# Avec taille de buffer personnalisée
-cc -Wall -Wextra -Werror -D BUFFER_SIZE=42 get_next_line.c get_next_line_utils.c
-```
-
 ## 📚 Structure du Projet
 
 | Fichier | Description |
@@ -37,14 +27,6 @@ cc -Wall -Wextra -Werror -D BUFFER_SIZE=42 get_next_line.c get_next_line_utils.c
 | get_next_line.h | Header et prototypes |
 | get_next_line_utils.c | Fonctions utilitaires |
 
-## ⭐ Bonus
-
-- Version avec une seule variable statique
-- Gestion de multiples descripteurs de fichier
-- Fichiers bonus : 
-  - get_next_line_bonus.c
-  - get_next_line_bonus.h
-  - get_next_line_utils_bonus.c
 
 ## ⚠️ Restrictions
 
